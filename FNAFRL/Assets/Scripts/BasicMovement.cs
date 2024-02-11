@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class BasicMovement : MonoBehaviour
 {
-    public float speed = 5.0F;
+    private float speed = 5.0F;
     private float Hinput;
     private float Finput;
     private float x;
     private float y;
     public float sensitivity = -1f;
     private Vector3 rotate;
+    private bool isSprinting;
 
     // Start is called before the first frame update
     void Start()
@@ -34,5 +35,15 @@ public class BasicMovement : MonoBehaviour
         x = Input.GetAxis("Mouse Y");
         rotate = new Vector3(x,y * sensitivity, 0);
         transform.eulerAngles = transform.eulerAngles - rotate;
+
+        // sprinting
+        if(Input.GetKeyDown(KeyCode.LeftShift) && isSprinting == false)
+        {
+            speed = 10f;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            speed = 5f;
+        }
     }
 }
