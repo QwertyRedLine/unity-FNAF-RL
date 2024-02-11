@@ -8,7 +8,6 @@ public class Flashlight : MonoBehaviour
     
     void Start()
     {
-
         light = GetComponent<Light>();
     }
 
