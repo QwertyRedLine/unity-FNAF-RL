@@ -5,12 +5,20 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+[SerializeField]
+private LayerMask mask;
+public Camera cam;
+public Light flashlight;
 public Interactable interactWith;
 public GameObject camHolder;
 public Rigidbody rb;
 public float speed, sensitivity, maxForce;
 private Vector2 move, look;
 private float lookRotation;
+[SerializeField]
+private float distance = 3f;
+private bool flashlightOn;
+private bool canInteract;
 
 
     void Start()
@@ -35,12 +43,26 @@ private float lookRotation;
     {
         if(context.performed)
         {
-            interactWith.Interaction();
+            if(canInteract)
+            {
+                Debug.Log("Interacted");
+                interactWith.Interaction();
+            }
+        }
+    }
+
+    public void FlashLight(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            flashlightOn = !flashlightOn;
         }
     }
 
     private void FixedUpdate()
     {
+        flashlight.enabled = flashlightOn;
+
         Vector3 currentVelocity = rb.velocity;
         Vector3 targetVelocity = new Vector3(move.x, 0, move.y);
         targetVelocity *= speed;
@@ -52,6 +74,22 @@ private float lookRotation;
         Vector3.ClampMagnitude(velocityChange, maxForce);
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
+
+        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * distance);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, distance, mask))
+        {
+            if(hitInfo.collider.GetComponent<Interactable>() != null)
+            {
+                canInteract = true;
+            }
+        }
+        else
+        {
+            canInteract = false;
+        }
     }
 
     void LateUpdate()
