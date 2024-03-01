@@ -7,8 +7,9 @@ public class DoorButton : MonoBehaviour
 
     public Interactable pushButton;
     public Animator dooranim;
-
+    
     private bool _isOpen = true;
+    public string animBool;
 
     private void OnEnable()
     {
@@ -33,6 +34,6 @@ public class DoorButton : MonoBehaviour
 
     private void FixedUpdate()
     {
-        dooranim.SetBool("IsOpen?", _isOpen);
+        dooranim.SetBool(animBool, _isOpen);
     }
 }
