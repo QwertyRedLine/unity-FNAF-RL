@@ -8,13 +8,29 @@ public class SFX : MonoBehaviour
     public AudioSource src;
     public AudioClip sfx;
     public AudioClip InteractSfx;
+    public Interactable playSfx;
 
     public bool needsInteraction;
-    
+
+    private void OnEnable()
+    {
+        if(playSfx)
+        {
+            playSfx.GetInteractEvent.HasInteracted += PlayAudio;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if(playSfx)
+        {
+            playSfx.GetInteractEvent.HasInteracted -= PlayAudio;
+        }
+    }    
 
     public void PlayAudio()
     {
-        if(needsInteraction)
+        if(playSfx)
         {
             src.clip = InteractSfx;
             src.Play();

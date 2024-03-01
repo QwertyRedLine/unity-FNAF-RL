@@ -5,11 +5,44 @@ using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {   
-    public UnityEvent Interacted;
+    InteractEvent Interact = new InteractEvent();
+    Player player;
 
-    public void Interaction()
+    public InteractEvent GetInteractEvent
     {
-        Interacted.Invoke();
+
+        get
+        {
+            if(Interact == null) Interact = new InteractEvent();
+            return Interact;
+        }
+            
+        
     }
-    
+
+    public Player getPlayer
+    {
+        get
+        {
+            return player;
+        }
+    }
+
+    public void CallInteract(Player interactPlayer)
+    {
+        player = interactPlayer;
+        Interact.Interacted();
+    }
+
+}
+
+public class InteractEvent
+{
+
+    public delegate void Interact();
+
+    public event Interact HasInteracted;
+
+    public void Interacted() => HasInteracted?.Invoke();
+
 }

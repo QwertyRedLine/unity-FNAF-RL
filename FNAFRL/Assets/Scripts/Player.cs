@@ -18,7 +18,7 @@ private float lookRotation;
 [SerializeField]
 private float distance = 3f;
 private bool flashlightOn;
-private bool canInteract;
+public string[] interactableObjects;
 
 
     void Start()
@@ -43,11 +43,7 @@ private bool canInteract;
     {
         if(context.performed)
         {
-            if(canInteract)
-            {
-                Debug.Log("Interacted");
-                interactWith.Interaction();
-            }
+            PlayerInteract();
         }
     }
 
@@ -74,22 +70,6 @@ private bool canInteract;
         Vector3.ClampMagnitude(velocityChange, maxForce);
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
-
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-        Debug.DrawRay(ray.origin, ray.direction * distance);
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo, distance, mask))
-        {
-            if(hitInfo.collider.GetComponent<Interactable>() != null)
-            {
-                canInteract = true;
-            }
-        }
-        else
-        {
-            canInteract = false;
-        }
     }
 
     void LateUpdate()
@@ -98,5 +78,18 @@ private bool canInteract;
         lookRotation += (-look.y * sensitivity);
         lookRotation = Mathf.Clamp(lookRotation, -90, 90);
         camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
+    }
+
+    public void PlayerInteract()
+    {
+        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * distance);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, distance, mask))
+        {
+            Interactable interactScript = hitInfo.transform.GetComponent<Interactable>();
+            if(interactScript) interactScript.CallInteract(this);
+        }
     }
 }
