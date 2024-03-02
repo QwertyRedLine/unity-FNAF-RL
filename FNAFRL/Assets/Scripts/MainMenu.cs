@@ -8,6 +8,8 @@ public class MainMenu : MonoBehaviour
     public Animator anim1;
     public Animator anim2;
     public Animator anim3;
+    public Animator anim4;
+
     public void Play()
     {
         SceneManager.LoadScene("Night 1");
@@ -25,6 +27,8 @@ public class MainMenu : MonoBehaviour
         anim2.SetBool("Play", true);
         yield return new WaitForSeconds(0.2f);
         anim3.SetBool("Play", true);
+        yield return new WaitForSeconds(0.4f);
+        anim4.SetBool("Play", true);
     }
 
     public void ExitGame()
