@@ -18,7 +18,10 @@ private float lookRotation;
 [SerializeField]
 private float distance = 3f;
 private bool flashlightOn;
+private bool _isSprinting;
 public string[] interactableObjects;
+private float _stamina = 100f;
+private bool _isMoving;
 
 
     void Start()
@@ -47,6 +50,14 @@ public string[] interactableObjects;
         }
     }
 
+    public void Sprint(InputAction.CallbackContext context)
+    {
+        if(context.performed && _stamina > 0f)
+        {
+            _isSprinting = !_isSprinting;
+        }
+    }
+
     public void FlashLight(InputAction.CallbackContext context)
     {
         if(context.performed)
@@ -70,6 +81,24 @@ public string[] interactableObjects;
         Vector3.ClampMagnitude(velocityChange, maxForce);
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
+
+        if (_isSprinting)
+        {
+            speed = 20f;
+            _stamina -= 1f;
+        }
+        else
+        {
+            speed = 10f;
+            if(_stamina < 100f)
+            {
+                _stamina += 2f;
+            }
+        }
+        if (_stamina < 1f)
+        {
+            _isSprinting = false;
+        }
     }
 
     void LateUpdate()
@@ -85,7 +114,6 @@ public string[] interactableObjects;
         Ray ray = new Ray(cam.transform.position, cam.transform.forward);
         Debug.DrawRay(ray.origin, ray.direction * distance);
         RaycastHit hitInfo;
-
         if (Physics.Raycast(ray, out hitInfo, distance, mask))
         {
             Interactable interactScript = hitInfo.transform.GetComponent<Interactable>();
