@@ -34,19 +34,27 @@ private bool _isMoving;
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        move = context.ReadValue<Vector2>();
+        if(PauseMenu._isPaused == false)
+        {
+            move = context.ReadValue<Vector2>();
+        }
     }
        
     public void OnLook(InputAction.CallbackContext context)
     {
-        look = context.ReadValue<Vector2>();
+        if(PauseMenu._isPaused == false)
+        {
+            look = context.ReadValue<Vector2>();
+       }
     }
-
     public void Interact(InputAction.CallbackContext context)
     {
         if(context.performed)
         {
-            PlayerInteract();
+            if(PauseMenu._isPaused == false)
+            {
+                PlayerInteract();
+            }
         }
     }
 
@@ -54,7 +62,17 @@ private bool _isMoving;
     {
         if(context.performed && _stamina > 0f)
         {
-            _isSprinting = !_isSprinting;
+            if(PauseMenu._isPaused == false)
+            {
+                _isSprinting = true;
+            }
+        }
+        else if (_stamina > 0f)
+        {
+            if(PauseMenu._isPaused == false)
+            {
+                _isSprinting = false;
+            }
         }
     }
 
@@ -62,7 +80,10 @@ private bool _isMoving;
     {
         if(context.performed)
         {
-            flashlightOn = !flashlightOn;
+            if(PauseMenu._isPaused == false && FlashlightPickup.pickedup)
+            {
+                flashlightOn = !flashlightOn;
+            }
         }
     }
 
