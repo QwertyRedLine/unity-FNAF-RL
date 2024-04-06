@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -19,9 +20,11 @@ private float lookRotation;
 private float distance = 3f;
 private bool flashlightOn;
 private bool _isSprinting;
-public string[] interactableObjects;
+public Animator flashlightAnim;
 private float _stamina = 100f;
 private bool _isMoving;
+public Image StaminaBar;
+public Canvas staminaCanvas;
 
 
     void Start()
@@ -91,6 +94,8 @@ private bool _isMoving;
     {
         flashlight.enabled = flashlightOn;
 
+        flashlightAnim.SetBool("Active?" ,flashlightOn);
+
         Vector3 currentVelocity = rb.velocity;
         Vector3 targetVelocity = new Vector3(move.x, 0, move.y);
         targetVelocity *= speed;
@@ -102,6 +107,17 @@ private bool _isMoving;
         Vector3.ClampMagnitude(velocityChange, maxForce);
 
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
+
+        StaminaBar.fillAmount = _stamina / 100f;
+
+        if(_stamina > 99f)
+        {
+            staminaCanvas.enabled = false;
+        }
+        else
+        {
+            staminaCanvas.enabled = true;
+        }
 
         if (_isSprinting)
         {
@@ -124,10 +140,13 @@ private bool _isMoving;
 
     void LateUpdate()
     {
+        if(PauseMenu._isPaused == false)
+        {
         transform.Rotate(Vector3.up * look.x * sensitivity);
         lookRotation += (-look.y * sensitivity);
         lookRotation = Mathf.Clamp(lookRotation, -90, 90);
         camHolder.transform.eulerAngles = new Vector3(lookRotation, camHolder.transform.eulerAngles.y, camHolder.transform.eulerAngles.z);
+        }
     }
 
     public void PlayerInteract()
